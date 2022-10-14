@@ -1,0 +1,17 @@
+# Ignore all files in config
+.config/*
+
+# except
+!.config/polybar
+!.config/rofi
+!.config/bspwm
+!.config/sxhkd
+!.config/alacritty
+!.config/dunst
+!.config/picom
+
+# Ignore files
+.bashrc
+.profile
+.bash_profile
+.zshrc

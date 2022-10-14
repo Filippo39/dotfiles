@@ -1,0 +1,19 @@
+configuration {
+    modi: "drun,window,run,ssh,windowcd,filebrowser";
+	display-drun:    " Apps";
+	display-ssh:    " SSH";
+	display-windowcd:  "缾 Windows";
+	font: "DejaVu Sans Mono 15";
+	show-icons: false;
+	sidebar-mode: false;
+	eh: 1;
+	dpi: 96;
+        terminal: "Alacritty";
+
+}
+
+@theme "Nord.rasi"
+listview {
+    lines: 8;
+}
+
