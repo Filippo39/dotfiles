@@ -128,7 +128,7 @@ bspc config presel_feedback_color	"#008ce3"
 bspc rule -a Slack desktop='7'
 bspc rule -a Google-chrome desktop='2'
 bspc rule -a Alacritty desktop='1'
-bspc rule -a Code desktop='3'
+# bspc rule -a Code desktop='3'
 bscp rule -a Thunderbird desktop='9'
 bscp rule -a Joplin desktop='9'
 # bspc rule -a Thunderbird desktop='^5'
