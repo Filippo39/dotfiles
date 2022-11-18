@@ -1,18 +1,24 @@
 {
   "name": "BIT",
   "displayName": "BIT",
-  "assetBundlePatterns": ["assets/**/*"],
+  "assetBundlePatterns": [
+    "assets/**/*"
+  ],
   "ios": {
     "bundleIdentifier": "it.bitmobility.bit"
   },
   "android": {
-    "permissions": ["ACCESS_BACKGROUND_LOCATION"]
+    "permissions": [
+      "ACCESS_BACKGROUND_LOCATION"
+    ]
   },
   "expo": {
     "name": "BIT",
     "slug": "BIT",
-    "version": "02.06.03",
-    "assetBundlePatterns": ["**/*"],
+    "version": "55.55.55",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "package": "it.bitmobility.bit"
     },
