@@ -15,7 +15,7 @@
   "expo": {
     "name": "BIT",
     "slug": "BIT",
-    "version": "xx.xx.xx",
+    "version": "XX.XX.XX",
     "assetBundlePatterns": [
       "**/*"
     ],
