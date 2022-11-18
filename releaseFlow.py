@@ -17,20 +17,19 @@ version = ''
     Check if the current branch is the develop branch and if there are no changes
 '''
 def check_current_branch_status() -> bool:
-    currentBranch = git.branch("--show-current")
-    if currentBranch != DEVELOP:
-        print(f"You must be on {DEVELOP} branch, but you are on {currentBranch}")
-        return False
+    current_branch = git.branch("--show-current")
+    if current_branch != DEVELOP:
+        print(f"You must be on {DEVELOP} branch, but you are on {current_branch}")
+        exit(1)
     # TODO:Uncomment
     # if (repo.is_dirty(untracked_files=True)):
     #     print("Your repo is dirty, please commit or stash your changes")
     #     return True
-    logging.info(currentBranch)
+    logging.info(current_branch)
     logging.info(repo.is_dirty())
-    return True
         
-# Check for json libary
 def update_version_and_changelog() -> None:
+    # TODO: uncomment
     # with open("android/gradle.properties", "r+") as file:
     #     lines = file.readlines()
     #     file.seek(0)
@@ -38,17 +37,24 @@ def update_version_and_changelog() -> None:
     #     for line in lines:
     #         file.write(re.sub(r'^versionName=.*', f'versionName={version}', line))
 
-    with open("package.json", "r+") as packageJsonFile:
-        data = json.load(packageJsonFile)
-        data["version"] = version
-        packageJsonFile.seek(0)
-        json.dump(data, packageJsonFile, indent=2)
+    with open("ios/BIT/Info.plist", "r+") as info_plist_file:
+        file_content = info_plist_file.read()
+        info_plist_file.seek(0)
+        key = "<key>CFBundleShortVersionString</key>"
+        info_plist_file.write(re.sub(r'{}\n\t<string>.*</string>'.format(key),f'{key}\n\t<string>{version}</string>', file_content))
+        info_plist_file.truncate()
 
-    with open("app.json", "r+") as appJsonFile:
-        data = json.load(appJsonFile)
+    with open("package.json", "r+") as package_json_file:
+        data = json.load(package_json_file)
+        data["version"] = version
+        package_json_file.seek(0)
+        json.dump(data, package_json_file, indent=2)
+
+    with open("app.json", "r+") as app_json_file:
+        data = json.load(app_json_file)
         data["expo"]["version"] = version
-        appJsonFile.seek(0)
-        json.dump(data, appJsonFile, indent=2)
+        app_json_file.seek(0)
+        json.dump(data, app_json_file, indent=2)
     
 '''
     Create a new release branch with the given version, commit new changes,
@@ -62,10 +68,6 @@ def commit_and_push_release_branch() -> None:
     git.tag(version)
     git.push("origin", version)
 
-'''
-    Open merge request from release branch into master and ask user for confirmation
-'''
-# TODO: pensare ad un restore in caso di rifuto
 # TODO: cosi non viene aperta alcuna MR
 def merge_release_branch_into_master() -> None:
     merge = input(f"Do you want to merge release/{version} branch into {MASTER}? [y/n] ")
@@ -74,11 +76,15 @@ def merge_release_branch_into_master() -> None:
         git.merge(f"release/{version}", "--no-ff")
         git.push("origin", MASTER)
         git.push("origin", "--delete", f"release/{version}")
-        git.branch("-D", f"release/{version}")
-        git.checkout(DEVELOP)
-        git.merge(MASTER, "--no-ff")
-        git.push("origin", DEVELOP)
-   
+    else:
+        print("Merge aborted")
+        exit(1)
+        # TODO: pensare ad un restore in caso di rifuto
+
+def merge_master_into_develop() -> None:
+    git.checkout(DEVELOP)
+    git.merge(MASTER, "--no-ff")
+    git.push("origin", DEVELOP)
 
 # TODO:
 #echo '  -> updating iOS project'
@@ -88,15 +94,12 @@ def merge_release_branch_into_master() -> None:
 def main() -> int:
     
     # TODO: uncomment
-    # if not check_current_branch_status():
-    #     return 1
-
+    #check_current_branch_status()
     # TODO: manca l'update del changelog
     update_version_and_changelog()
-
-    commit_and_push_release_branch()
-
-    merge_release_branch_into_master()
+    #commit_and_push_release_branch()
+    #merge_release_branch_into_master()
+    #merge_master_into_develop()
 
     return 0
 
@@ -110,4 +113,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     version = args.version
     
-    raise exit(main())
+    main()
