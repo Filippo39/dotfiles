@@ -85,7 +85,7 @@ def merge_release_branch_into_master() -> None:
 #(cd ios && xcrun agvtool new-marketing-version ${NEW_VERSION}) > /dev/null
 
 
-def main() -> int:
+def main() -> int:s
     
     # TODO: uncomment
     # if not check_current_branch_status():
