@@ -81,9 +81,9 @@ def merge_release_branch_into_master() -> None:
         print("Merge aborted, rollbacking...")
         git.push("origin", "--delete", version) # Delete remote tag
         git.tag("-d", version)
+        git.checkout(DEVELOP)
         git.push("origin", "--delete", f"release/{version}")
         git.branch("-D", f"release/{version}")
-        git.checkout(DEVELOP)
         exit(1)
 
 def merge_master_into_develop() -> None:
