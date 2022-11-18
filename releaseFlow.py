@@ -24,8 +24,6 @@ def check_current_branch_status() -> bool:
     if (repo.is_dirty(untracked_files=True)):
         print("Your repo is dirty, please commit or stash your changes")
         exit(1)
-    logging.info(current_branch)
-    logging.info(repo.is_dirty())
         
 def update_version_and_changelog() -> None:
     with open("android/gradle.properties", "r+") as gradle_properties_file:
