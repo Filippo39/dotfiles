@@ -34,8 +34,8 @@ def check_current_branch_status() -> bool:
 '''
 def create_and_tag_release_branch() -> None:
     git.checkout("HEAD", b=f"release/{version}")
-    git.tag(version)
     git.push("origin", f"release/{version}")
+    git.push("origin", {version})
     
 # Check for json libary
 def update_version_and_changelog() -> None:
@@ -59,6 +59,7 @@ def update_version_and_changelog() -> None:
         json.dump(data, appJsonFile, indent=2)
     
 def commit_and_push_release_branch() -> None:
+    print(currentBranch = git.branch("--show-current"))
     git.add(".")
     git.commit("-m", "Update version")
     git.push("origin", f"release/{version}")
