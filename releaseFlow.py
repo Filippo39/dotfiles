@@ -71,12 +71,12 @@ def merge_release_branch_into_master() -> None:
     merge = input(f"Do you want to merge release/{version} branch into {MASTER}? [y/n] ")
     if merge.lower() in ("y", "yes"):
         git.checkout(MASTER)
-        git.merge(f"release/{version}", "-m", f"Merge release/{version} into {MASTER}")
+        git.merge(f"release/{version}", "--no-ff")
         git.push("origin", MASTER)
         git.push("origin", "--delete", f"release/{version}")
         git.branch("-D", f"release/{version}")
         git.checkout(DEVELOP)
-        git.merge(MASTER, "-m", f"Merge {MASTER} into {DEVELOP}")
+        git.merge(MASTER, "--no-ff")
         git.push("origin", DEVELOP)
    
 
