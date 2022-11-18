@@ -55,7 +55,7 @@ def update_version_and_changelog() -> None:
     tag the commit and push the branch and the tag
 '''
 def commit_and_push_release_branch() -> None:
-    git.checkout("HEAD", b=f"release/{version}")
+    git.checkout("-b", f"release/{version}")
     git.add(".")
     git.commit("-m", "Update version")
     git.push("origin", f"release/{version}")
