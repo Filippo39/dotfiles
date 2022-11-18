@@ -96,7 +96,7 @@ def main() -> int:
 
     commit_and_push_release_branch()
 
-    merge_release_branch_into_master()
+    # merge_release_branch_into_master()
 
     return 0
 
