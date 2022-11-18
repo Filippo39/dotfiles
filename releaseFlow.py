@@ -81,7 +81,7 @@ def merge_release_branch_into_master() -> None:
    
 
 # TODO:
-#echo '  -> updating iOS project'
+#echo '  -> updating iOS project's
 #(cd ios && xcrun agvtool new-marketing-version ${NEW_VERSION}) > /dev/null
 
 
