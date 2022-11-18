@@ -60,7 +60,7 @@ def update_version_and_changelog() -> None:
 def commit_and_push_release_branch() -> None:
 
     if not repo.is_dirty(untracked_files=True):
-        logging.warn("Your repo is clean, nothing to commit")
+        logging.warning("Your repo is clean, nothing to commit")
         exit(1)
 
     git.checkout("-b", f"release/{version}")
