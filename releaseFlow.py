@@ -71,17 +71,17 @@ def merge_release_branch_into_master() -> None:
     merge = input(f"Do you want to merge release/{version} branch into {MASTER}? [y/n] ")
     if merge.lower() in ("y", "yes"):
         git.checkout(MASTER)
-        git.merge(f"release/{version}")
+        git.merge(f"release/{version}", "-m", f"Merge release/{version} into {MASTER}")
         git.push("origin", MASTER)
         git.push("origin", "--delete", f"release/{version}")
         git.branch("-D", f"release/{version}")
         git.checkout(DEVELOP)
-        git.merge(MASTER)
+        git.merge(MASTER, "-m", f"Merge {MASTER} into {DEVELOP}")
         git.push("origin", DEVELOP)
    
 
 # TODO:
-#echo '  -> updating iOS project's
+#echo '  -> updating iOS project'
 #(cd ios && xcrun agvtool new-marketing-version ${NEW_VERSION}) > /dev/null
 
 
@@ -96,7 +96,7 @@ def main() -> int:
 
     commit_and_push_release_branch()
 
-    # merge_release_branch_into_master()
+    merge_release_branch_into_master()
 
     return 0
 
