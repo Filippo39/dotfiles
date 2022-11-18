@@ -35,6 +35,7 @@ def check_current_branch_status() -> bool:
 def create_and_tag_release_branch() -> None:
     git.checkout("HEAD", b=f"release/{version}")
     git.push("origin", f"release/{version}")
+    git.tag(version)
     git.push("origin", version)
     
 # Check for json libary
