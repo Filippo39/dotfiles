@@ -19,10 +19,10 @@ version = ''
 def check_current_branch_status() -> bool:
     current_branch = git.branch("--show-current")
     if current_branch != DEVELOP:
-        print(f"You must be on {DEVELOP} branch, but you are on {current_branch}")
+        logging.error(f"You must be on {DEVELOP} branch, but you are on {current_branch}")
         exit(1)
     if (repo.is_dirty(untracked_files=True)):
-        print("Your repo is dirty, please commit or stash your changes")
+        logging.error("Your repo is dirty, please commit or stash your changes")
         exit(1)
         
 def update_version_and_changelog() -> None:
@@ -60,7 +60,7 @@ def update_version_and_changelog() -> None:
 def commit_and_push_release_branch() -> None:
 
     if not repo.is_dirty(untracked_files=True):
-        print("Your repo is clean, nothing to commit")
+        logging.warning("Your repo is clean, nothing to commit")
         exit(1)
 
     git.checkout("-b", f"release/{version}")
