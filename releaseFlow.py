@@ -21,10 +21,9 @@ def check_current_branch_status() -> bool:
     if current_branch != DEVELOP:
         print(f"You must be on {DEVELOP} branch, but you are on {current_branch}")
         exit(1)
-    # TODO:Uncomment
-    # if (repo.is_dirty(untracked_files=True)):
-    #     print("Your repo is dirty, please commit or stash your changes")
-    #     return True
+    if (repo.is_dirty(untracked_files=True)):
+        print("Your repo is dirty, please commit or stash your changes")
+        exit(1)
     logging.info(current_branch)
     logging.info(repo.is_dirty())
         
@@ -61,6 +60,11 @@ def update_version_and_changelog() -> None:
     tag the commit and push the branch and the tag
 '''
 def commit_and_push_release_branch() -> None:
+
+    if not repo.is_dirty(untracked_files=True):
+        print("Your repo is clean, nothing to commit")
+        exit(1)
+
     git.checkout("-b", f"release/{version}")
     git.add(".")
     git.commit("-m", "Update version")
@@ -94,15 +98,14 @@ def main() -> int:
 
     logging.info("Starting release flow")
     
-    #check_current_branch_status()
+    check_current_branch_status()
     update_version_and_changelog()
-    #commit_and_push_release_branch()
-    #merge_release_branch_into_master()
-    #merge_master_into_develop()
+    commit_and_push_release_branch()
+    merge_release_branch_into_master()
+    merge_master_into_develop()
 
     logging.info("Release flow completed")
-
-    return 0
+    exit(0)
 
 
 if __name__ == "__main__":
