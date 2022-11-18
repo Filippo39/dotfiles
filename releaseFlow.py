@@ -60,7 +60,7 @@ def update_version_and_changelog() -> None:
         json.dump(data, appJsonFile, indent=2)
     
 def commit_and_push_release_branch() -> None:
-    print(currentBranch = git.branch("--show-current"))
+    print(git.branch("--show-current"))
     git.add(".")
     git.commit("-m", "Update version")
     git.push("origin", f"release/{version}")
