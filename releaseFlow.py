@@ -75,6 +75,7 @@ def merge_release_branch_into_master() -> None:
         git.merge(f"release/{version}")
         git.push("origin", MASTER)
         git.push("origin", "--delete", f"release/{version}")
+        git.branch("-D", f"release/{version}")
         git.checkout(DEVELOP)
         git.merge(MASTER)
         git.push("origin", DEVELOP)
