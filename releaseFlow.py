@@ -28,16 +28,7 @@ def check_current_branch_status() -> bool:
     logging.info(currentBranch)
     logging.info(repo.is_dirty())
     return True
-    
-'''
-    Create a new release branch with the given version and tag it
-'''
-def create_and_tag_release_branch() -> None:
-    git.checkout("HEAD", b=f"release/{version}")
-    git.push("origin", f"release/{version}")
-    git.tag(version)
-    git.push("origin", version)
-    
+        
 # Check for json libary
 def update_version_and_changelog() -> None:
     # with open("android/gradle.properties", "r+") as file:
@@ -59,11 +50,17 @@ def update_version_and_changelog() -> None:
         appJsonFile.seek(0)
         json.dump(data, appJsonFile, indent=2)
     
+'''
+    Create a new release branch with the given version, commit new changes,
+    tag the commit and push the branch and the tag
+'''
 def commit_and_push_release_branch() -> None:
-    print(git.branch("--show-current"))
+    git.checkout("HEAD", b=f"release/{version}")
     git.add(".")
     git.commit("-m", "Update version")
     git.push("origin", f"release/{version}")
+    git.tag(version)
+    git.push("origin", version)
 
 '''
     Open merge request from release branch into master and ask user for confirmation
@@ -93,9 +90,6 @@ def main() -> int:
     # TODO: uncomment
     # if not check_current_branch_status():
     #     return 1
-
-    # TODO: uncomment
-    create_and_tag_release_branch()
 
     # TODO: manca l'update del changelog
     update_version_and_changelog()
