@@ -29,19 +29,17 @@ def check_current_branch_status() -> bool:
     logging.info(repo.is_dirty())
         
 def update_version_and_changelog() -> None:
-    # TODO: uncomment
-    # with open("android/gradle.properties", "r+") as file:
-    #     lines = file.readlines()
-    #     file.seek(0)
-    #     file.read(0)
-    #     for line in lines:
-    #         file.write(re.sub(r'^versionName=.*', f'versionName={version}', line))
+    with open("android/gradle.properties", "r+") as gradle_properties_file:
+        file_content = gradle_properties_file.read()
+        gradle_properties_file.seek(0)
+        gradle_properties_file.write(re.sub(r'versionName=.*', f'versionName={version}', file_content))
+        gradle_properties_file.truncate()
 
     with open("ios/BIT/Info.plist", "r+") as info_plist_file:
         file_content = info_plist_file.read()
         info_plist_file.seek(0)
         key = "<key>CFBundleShortVersionString</key>"
-        info_plist_file.write(re.sub(r'{}\n\t<string>.*</string>'.format(key),f'{key}\n\t<string>{version}</string>', file_content))
+        info_plist_file.write(re.sub(r'{}\n\t<string>.*</string>'.format(key), f'{key}\n\t<string>{version}</string>', file_content))
         info_plist_file.truncate()
 
     with open("package.json", "r+") as package_json_file:
@@ -55,6 +53,8 @@ def update_version_and_changelog() -> None:
         data["expo"]["version"] = version
         app_json_file.seek(0)
         json.dump(data, app_json_file, indent=2)
+
+    # TODO: update changelog
     
 '''
     Create a new release branch with the given version, commit new changes,
@@ -66,9 +66,8 @@ def commit_and_push_release_branch() -> None:
     git.commit("-m", "Update version")
     git.push("origin", f"release/{version}")
     git.tag(version)
-    git.push("origin", version)
+    git.push("origin", version) # Push remote tag
 
-# TODO: cosi non viene aperta alcuna MR
 def merge_release_branch_into_master() -> None:
     merge = input(f"Do you want to merge release/{version} branch into {MASTER}? [y/n] ")
     if merge.lower() in ("y", "yes"):
@@ -77,29 +76,31 @@ def merge_release_branch_into_master() -> None:
         git.push("origin", MASTER)
         git.push("origin", "--delete", f"release/{version}")
     else:
-        print("Merge aborted")
+        print("Merge aborted, rollbacking...")
+        git.push("origin", "--delete", version) # Delete remote tag
+        git.tag("-d", version)
+        git.push("origin", "--delete", f"release/{version}")
+        git.branch("-D", f"release/{version}")
+        git.checkout(DEVELOP)
         exit(1)
-        # TODO: pensare ad un restore in caso di rifuto
 
 def merge_master_into_develop() -> None:
     git.checkout(DEVELOP)
     git.merge(MASTER, "--no-ff")
     git.push("origin", DEVELOP)
 
-# TODO:
-#echo '  -> updating iOS project'
-#(cd ios && xcrun agvtool new-marketing-version ${NEW_VERSION}) > /dev/null
-
 
 def main() -> int:
+
+    logging.info("Starting release flow")
     
-    # TODO: uncomment
     #check_current_branch_status()
-    # TODO: manca l'update del changelog
     update_version_and_changelog()
     #commit_and_push_release_branch()
     #merge_release_branch_into_master()
     #merge_master_into_develop()
+
+    logging.info("Release flow completed")
 
     return 0
 

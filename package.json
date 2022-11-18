@@ -1,6 +1,6 @@
 {
   "name": "bit-app",
-  "version": "SS.SS.SS",
+  "version": "XX.XX.XS",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
