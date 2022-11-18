@@ -15,7 +15,7 @@
   "expo": {
     "name": "BIT",
     "slug": "BIT",
-    "version": "YY.YY.YY",
+    "version": "X.X.X",
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -31,4 +31,5 @@
     "backgroundColor": "#FFFFFF",
     "resizeMode": "contain"
   }
+}}
 }
