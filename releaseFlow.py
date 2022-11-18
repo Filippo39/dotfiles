@@ -71,7 +71,9 @@ def commit_and_push_release_branch() -> None:
     git.push("origin", version) # Push remote tag
 
 def merge_release_branch_into_master() -> None:
-    merge = input(f"Do you want to merge release/{version} branch into {MASTER}? [y/n] ")
+    logging.info(f"Do you want to merge release/{version} branch into {MASTER}? [y/n]")
+    merge = input()
+
     if merge.lower() in ("y", "yes"):
         git.checkout(MASTER)
         git.merge(f"release/{version}", "--no-ff")
@@ -81,9 +83,9 @@ def merge_release_branch_into_master() -> None:
         print("Merge aborted, rollbacking...")
         git.push("origin", "--delete", version) # Delete remote tag
         git.tag("-d", version)
+        git.checkout(DEVELOP)
         git.push("origin", "--delete", f"release/{version}")
         git.branch("-D", f"release/{version}")
-        git.checkout(DEVELOP)
         exit(1)
 
 def merge_master_into_develop() -> None:
