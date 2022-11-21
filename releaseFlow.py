@@ -5,6 +5,7 @@ import logging
 from git import Repo, Git
 import re
 import json
+import subprocess
 
 MASTER = "fakeMaster" # FIXME: master
 DEVELOP = "fakeDevelop" # FIXME: develop
@@ -21,9 +22,9 @@ def check_current_branch_status() -> bool:
     if current_branch != DEVELOP:
         logging.error(f"You must be on {DEVELOP} branch, but you are on {current_branch}")
         exit(1)
-    if (repo.is_dirty(untracked_files=True)):
-        logging.error("Your repo is dirty, please commit or stash your changes")
-        exit(1)
+    # if (repo.is_dirty(untracked_files=True)):
+    #     logging.error("Your repo is dirty, please commit or stash your changes")
+    #     exit(1)
         
 def update_version_and_changelog() -> None:
     with open("android/gradle.properties", "r+") as gradle_properties_file:
@@ -51,7 +52,21 @@ def update_version_and_changelog() -> None:
         app_json_file.seek(0)
         json.dump(data, app_json_file, indent=2)
 
-    # TODO: update changelog
+    with open('CHANGELOG.md', 'r+') as f:
+        lines = f.readlines()
+        f.seek(0)
+
+        footer = ""
+        for index, line in enumerate(lines):
+            if index > 1: # Skip first two lines
+                footer += line
+
+        data = subprocess.Popen("git cliff --unreleased --tag XX.XX.XX | sed -n '/<!-- MakefileMarker -->/{:a;n;/<!-- MakefileMarker -->/q;p;ba}'",
+            shell=True, stdout=subprocess.PIPE)
+        header = "# Changelog\n\n" + data.stdout.read().decode('utf-8')
+        
+        f.write(header + footer)
+        f.truncate()
     
 '''
     Create a new release branch with the given version, commit new changes,
@@ -105,6 +120,7 @@ def main() -> int:
     merge_master_into_develop()
 
     logging.info("Release flow completed")
+
     exit(0)
 
 
